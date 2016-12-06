@@ -1,9 +1,9 @@
 import Vue from 'vue'
 
 export default {
-    getCitys() {
-        return Vue.http.get('/city')
+    getCates() {
+        return Vue.http.get('/cates')
             .then(res => res.json(),
-                res => console.error('error: ', res.status, res.statusText))
+            res => console.error('error: ', res.status, res.statusText))
     }
 }

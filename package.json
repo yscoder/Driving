@@ -9,9 +9,11 @@
   "scripts": {
     "dev": "node config/dev-server.js",
     "build": "node config/build.js",
-    "server": "node test/e2e/runner.js"
+    "start": "node server/app.js"
   },
   "dependencies": {
+    "cheerio": "^0.22.0",
+    "iconv-lite": "^0.4.15",
     "vue": "^2.1.0",
     "vue-resource": "^1.0.3",
     "vue-router": "^2.0.1",

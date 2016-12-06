@@ -30,6 +30,8 @@ app.use(require('connect-history-api-fallback')())
 app.use(devMiddleware)
 app.use(hotMiddleware)
 
+require('../server/router')(app)
+
 // serve pure static assets
 app.use('/src', express.static('./src'))
 

@@ -43,7 +43,7 @@ export default {
         }
     },
     mounted() {
-        this.setHighlightStyle(this.activeIndex)
+        this.items.length && this.setHighlightStyle(this.activeIndex)
     }
 }
 </script>
@@ -52,6 +52,7 @@ export default {
 
 .md-tabs {
     position: relative;
+    z-index: 10;
     width: 100%;
     overflow: hidden;
     background: @primary-color;

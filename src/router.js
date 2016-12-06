@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Hello from './view/Hello'
+import ListView from './view/ListView'
 
 Vue.use(VueRouter)
 
 export default new VueRouter({
     routes: [
-        { path: '/', component: Hello }
+        { path: '/', component: ListView },
+        { path: '/:list', component: resolve => require(['./view/ListView'], resolve) }
     ]
 })
