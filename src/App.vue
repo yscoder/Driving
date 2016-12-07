@@ -3,7 +3,7 @@
 </style>
 <template>
     <div id="app">
-        <tabs v-if="items && items.length" :items="items" @on-change="onChange"></tabs>
+        <tabs v-if="items && items.length" :items="items" @on-change="onChange"/>
         <router-view></router-view>
     </div>
 </template>
@@ -17,7 +17,10 @@ export default {
     },
     data() {
         return {
-            items: []
+            items: [{
+                text: '首页',
+                path: '/'
+            }]
         }
     },
     methods: {
@@ -28,8 +31,8 @@ export default {
         }
     },
     created() {
-        Api.getCates().then(data => {
-            this.items = data
+        Api.cates().then(data => {
+            this.items = this.items.concat(data)
             this.$router.push({
                 path: data[0].path
             })

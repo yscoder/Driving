@@ -1,13 +1,10 @@
 <template>
     <div class="waterfall">
-        <div class="waterfall-group">
-            <div class="waterfall-item" v-if="items[0]" v-for="item in items[0]">
-                <img :src="item.src" :alt="item.text" @click="onClick(item)">
-            </div>
-        </div>
-        <div class="waterfall-group">
-            <div class="waterfall-item" v-if="items[1]" v-for="item in items[1]">
-                <img :src="item.src" :alt="item.text" @click="onClick(item)">
+        <div class="waterfall-group"
+            v-if="items && items.length"
+            v-for="group in items">
+            <div class="waterfall-item" v-for="item in group">
+                <img :src="item.url" :alt="item.title" @click="onClick(item)">
             </div>
         </div>
     </div>

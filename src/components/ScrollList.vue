@@ -1,6 +1,6 @@
 <template>
-    <scroll-load>
-        <waterfall slot :items="items" @selected="onSelected"></waterfall>
+    <scroll-load :showLoading="showLoading" @on-load="onLoad">
+        <waterfall slot :items="data" @selected="onSelected"></waterfall>
     </scroll-load>
 </template>
 <script>
@@ -16,19 +16,15 @@ export default {
         data: {
             type: Array,
             default: []
-        }
+        },
+        showLoading: Boolean
     },
     methods: {
         onSelected(item) {
             this.$emit('on-tap', item)
-        }
-    },
-    computed: {
-        items() {
-            return [
-                this.data.filter((item, i) => i % 2 === 0),
-                this.data.filter((item, i) => i % 2 !== 0)
-            ]
+        },
+        onLoad() {
+            this.$emit('on-load')
         }
     }
 }

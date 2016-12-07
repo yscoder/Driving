@@ -1,5 +1,5 @@
 <template>
-    <div class="scroll-load">
+    <div class="scroll-load" @scroll="onScroll">
         <div class="scroll-content">
             <slot></slot>
         </div>
@@ -10,10 +10,20 @@
 </template>
 <script>
 export default {
-    data() {
-        return {
-            showLoading: true
+    props: {
+        showLoading: Boolean
+    },
+    methods: {
+        onScroll(e) {
+            const $el = this.$el
+
+            if ($el.scrollHeight - $el.scrollTop === $el.offsetHeight) {
+                this.$emit('on-load')
+            }
         }
+    },
+    mounted() {
+
     }
 }
 </script>
