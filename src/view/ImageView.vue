@@ -1,6 +1,10 @@
 <template>
     <transition name="fade-in-left">
-        <gallery :url="item" :type="type" @on-touch="onTouch"/>
+        <gallery :key="key"
+            :items="items"
+            :show="true"
+            @on-touch="onTouch"
+            @on-back="onBack"/>
     </transition>
 </template>
 <script>
@@ -14,29 +18,35 @@ export default {
     data() {
         return {
             id: 0,
-            item: '',
+            items: [],
             page: 1,
             pageCount: 0,
-            type: ''
+            type: '',
+            key: Date.now()
         }
     },
     methods: {
-        onTouch(type) {
-            console.log('touch')
-            this.page = type === 'PREV' ? (this.page === 0 ? this.pageCount : this.page - 1)
-                : (this.page === this.pageCount ? 0 : this.page + 1)
-            console.log(this.page)
-            this.$router.push(`/${this.type}/${this.id}/${this.page}`)
+        onTouch(index) {
+            this.page = index + 2
+            if (this.page === this.items.length + 1 && this.page < this.pageCount) {
+                console.log(this.page)
+                this.fetch()
+            }
         },
         fetch() {
             this.type = this.$route.params.type
             this.id = this.$route.params.id
-            this.page = parseInt(this.$route.params.page) || 1
-            Api.details(this.type, this.id, this.page > 1 ? this.page : '').then(data => {
-                this.item = data.url
+            this.key = this.type + this.id
+            Api.details(this.type, this.id, this.page > 1 ? this.page : '', {
+                params: { max: this.pageCount }
+            }).then(data => {
+                this.items = this.items.concat(data.list)
                 this.pageCount = data.pageCount
-                this.transitionName = 'fade-out-left'
+                // this.transitionName = 'fade-in-left'
             })
+        },
+        onBack() {
+            this.$destroy()
         }
     },
     watch: {

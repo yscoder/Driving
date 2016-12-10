@@ -52,15 +52,33 @@ exports.list = (req, res) => {
 }
 
 exports.details = (req, res) => {
-    const path = `${req.params.type}/${req.params.id}`
-    const page = `${req.params.page ? '_' + req.params.page : ''}.html`
+    const url = remote + req.params.type + '/' + req.params.id
+    const pageNo = parseInt(req.params.page || 1)
+    const pageMax = req.params.max ? Math.min(parseInt(req.params.max), pageNo + 4) : pageNo + 4
+    let queue = []
 
-    request(`${remote + path}${page}`).get().then(body => {
-        const $ = cheerio.load(body)
+    for (let i = pageNo; i <= pageMax; i++) {
+        queue.push(request(url + (i > 1 ? `_${i}` : '') + '.html').get())
+    }
+
+    Promise.all(queue).then(contents => {
+        let list = []
+        let pageCount = 0
+
+        contents.forEach(body => {
+            const $ = cheerio.load(body)
+            const src = $('.ArticleBox').find('img').attr('src')
+
+            list.push({
+                src,
+                id: src.match(/\/(\w+)\.[a-zA-Z]+$/)[1]
+            })
+            pageCount = pageCount || parseInt($('#pageinfo').attr('pageinfo'))
+        })
 
         res.send({
-            pageCount: parseInt($('#pageinfo').attr('pageinfo')),
-            url: $('.ArticleBox').find('img').attr('src')
+            list,
+            pageCount
         })
     })
 }

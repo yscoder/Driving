@@ -4,7 +4,9 @@
 <template>
     <div id="app">
         <tabs v-if="items && items.length" :items="items" @on-change="onChange"/>
-        <router-view></router-view>
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
     </div>
 </template>
 <script>

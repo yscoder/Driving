@@ -1,61 +1,88 @@
 <template>
-    <div class="gallery">
+    <div class="gallery" v-show="show">
         <header class="gallery-hd">
             <a @click="back">
                 <i class="material-icons">arrow_back</i>
             </a>
         </header>
-        <figure class="gallery-box"
-            v-if="url"
-            v-touch:tap="onTouch"
-            v-touch:swipeleft="onTouch"
-            v-touch:swiperight="onTouch">
-            <img :src="url" @load="onLoad">
-        </figure>
+        <div class="gallery-box"
+            :class="{ transition: isPan }"
+            :style="{ width: width, transform: transform}"
+            @transitionend="onPanEnd">
+            <figure class="gallery-item"
+                v-for="item in items"
+                v-touch:panstart="onPan"
+                v-touch:tap="onTouch"
+                v-touch:swipeleft="onTouch"
+                v-touch:swiperight="onTouch">
+                <img :src="item.src" @load="onLoad">
+            </figure>
+        </div>
     </div>
 </template>
 <script>
 export default {
     props: {
-        url: String,
-        type: String
+        items: Array,
+        show: false
+    },
+    data() {
+        return {
+            index: 0,
+            isPan: false
+        }
+    },
+    computed: {
+        width() {
+            return this.items.length + '00%'
+        },
+        transform() {
+            return `translate3d(${(-100 * this.index / this.items.length) + '%'}, 0, 0)`
+        }
     },
     methods: {
-        onTouch(e) {
-            console.log(e.type)
-            this.$emit('on-touch', e.type === 'swiperight' ? 'PREV' : 'NEXT')
-        },
         back() {
-            this.$router.push('/' + this.type)
+            this.$router.back()
+            this.$emit('on-back')
+        },
+        onPan() {
+            this.isPan = true
+        },
+        onPanEnd() {
+            this.isPan = false
+        },
+        onTouch(e) {
+            this.index = e.type === 'swiperight' ? Math.max(this.index - 1, 0)
+                : Math.min(this.index + 1, this.items.length - 1)
+            this.$emit('on-touch', this.index)
+            e.preventDefault()
         },
         onLoad() {
 
         }
-    },
-    mounted() {
-        console.log('ready')
     }
 }
 </script>
 <style lang="less">
-.gallery,
-.gallery-box {
+.gallery {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
-}
-.gallery {
-    z-index: 9999;
     background: #000;
+    z-index: 9999;
 }
 .gallery-box {
+    position: absolute;
     z-index: 1;
-    line-height: 100vh;
-
-    img {
-        width: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    &.transition {
+        transition: transform .2s ease-in-out
     }
 }
 .gallery-hd {
@@ -70,6 +97,14 @@ export default {
         height: 56px;
         line-height: 1;
         color: #fff;
+    }
+}
+.gallery-item {
+    width: 100vw;
+    height: 100vh;
+    line-height: 100vh;
+    img {
+        width: 100%;
     }
 }
 </style>

@@ -1,9 +1,12 @@
 <template>
-    <scroll-list
-        :data="items"
-        :showLoading="showLoading"
-        @on-tap="onTap"
-        @on-load="onLoad"/>
+    <transition name="fade-in-left" mode="in-out">
+        <scroll-list
+            :key="type"
+            :data="items"
+            :showLoading="showLoading"
+            @on-tap="onTap"
+            @on-load="onLoad"/>
+    </transition>
 </template>
 <script>
 import ScrollList from 'components/ScrollList'
@@ -46,6 +49,7 @@ export default {
             this.type = type
             this.page = 1
             this.items = [[], []]
+            this.fetch()
         }
     },
     watch: {
@@ -53,12 +57,11 @@ export default {
             console.log('listView', to, from)
             if (to.params.type !== this.type) {
                 this.reset(this.$route.params.type)
-                this.fetch()
             }
         }
     },
     created() {
-
+        this.reset(this.$route.params.type)
     }
 }
 </script>
