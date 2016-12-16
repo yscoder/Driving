@@ -1,9 +1,10 @@
 <template>
     <div class="gallery" v-show="show">
         <header class="gallery-hd">
-            <a @click="back">
+            <a class="left" @click="back">
                 <i class="material-icons">arrow_back</i>
             </a>
+            <span>{{index + 1}}/{{count}}</span>
         </header>
         <div class="gallery-box"
             :class="{ transition: isPan }"
@@ -24,7 +25,8 @@
 export default {
     props: {
         items: Array,
-        show: false
+        show: false,
+        count: Number
     },
     data() {
         return {
@@ -91,12 +93,21 @@ export default {
     width: 100%;
     height: 56px;
     line-height: 56px;
+    padding: 0 56px;
+    text-align: center;
+    color: #fff;
+    font-size: 18px;
+
     a {
-        display: inline-block;
         padding: 16px;
         height: 56px;
         line-height: 1;
         color: #fff;
+    }
+    .left {
+        position: absolute;
+        top: 0;
+        left: 0;
     }
 }
 .gallery-item {

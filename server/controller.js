@@ -4,7 +4,7 @@ const url = require('url')
 
 const remote = 'http://m.duotoo.com/'
 
-exports.cates = (req, res) => {
+export const cates = (req, res) => {
     request(`${remote}meinvtupian/`).get().then(body => {
         const $ = cheerio.load(body)
 
@@ -22,16 +22,17 @@ exports.cates = (req, res) => {
     })
 }
 
-exports.list = (req, res) => {
+export const list = (req, res) => {
     const type = req.params.type
     const page = req.params.page ? `${type}_${req.params.page}.html` : ''
 
     request(`${remote + type}/${page}`).get().then(body => {
         const $ = cheerio.load(body)
 
-        let list = []
+        let listL = []
+        let listR = []
         $('.listUll, .listUlr').each((i, el) => {
-            let items = []
+            let items = i % 2 === 0 ? listL : listR
             $(el).find('.libox a').each((j, a) => {
                 const $link = $(a)
                 items.push({
@@ -41,20 +42,19 @@ exports.list = (req, res) => {
                     type
                 })
             })
-            list.push(items)
         })
 
         res.send({
             pageCount: parseInt($('#pageinfo').attr('pageinfo')),
-            list
+            list: [listL, listR]
         })
     })
 }
 
-exports.details = (req, res) => {
+export const details = (req, res) => {
     const url = remote + req.params.type + '/' + req.params.id
     const pageNo = parseInt(req.params.page || 1)
-    const pageMax = req.params.max ? Math.min(parseInt(req.params.max), pageNo + 4) : pageNo + 4
+    const pageMax = req.query.max ? Math.min(parseInt(req.query.max), pageNo + 4) : pageNo + 4
     let queue = []
 
     for (let i = pageNo; i <= pageMax; i++) {
@@ -67,12 +67,16 @@ exports.details = (req, res) => {
 
         contents.forEach(body => {
             const $ = cheerio.load(body)
-            const src = $('.ArticleBox').find('img').attr('src')
 
-            list.push({
-                src,
-                id: src.match(/\/(\w+)\.[a-zA-Z]+$/)[1]
-            })
+            try {
+                const src = $('.ArticleBox').find('img').attr('src')
+                const id = src.match(/\/(\w+)\.[a-zA-Z]+$/)[1]
+                list.push({ src, id })
+            } catch (e) {
+                console.log(e)
+                console.log('src:' + $('.ArticleBox').find('img').attr('src'))
+            }
+
             pageCount = pageCount || parseInt($('#pageinfo').attr('pageinfo'))
         })
 

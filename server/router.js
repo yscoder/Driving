@@ -1,7 +1,7 @@
 const path = require('path')
 const controller = require('./controller')
 
-module.exports = app => {
+export default app => {
     app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname, '../public/index.html'))
     })

@@ -3,6 +3,7 @@
         <gallery :key="key"
             :items="items"
             :show="true"
+            :count="pageCount"
             @on-touch="onTouch"
             @on-back="onBack"/>
     </transition>
@@ -28,7 +29,7 @@ export default {
     methods: {
         onTouch(index) {
             this.page = index + 2
-            if (this.page === this.items.length + 1 && this.page < this.pageCount) {
+            if (this.page === this.items.length + 1 && this.page <= this.pageCount) {
                 console.log(this.page)
                 this.fetch()
             }
@@ -38,7 +39,7 @@ export default {
             this.id = this.$route.params.id
             this.key = this.type + this.id
             Api.details(this.type, this.id, this.page > 1 ? this.page : '', {
-                params: { max: this.pageCount }
+                params: { max: this.pageCount || '' }
             }).then(data => {
                 this.items = this.items.concat(data.list)
                 this.pageCount = data.pageCount

@@ -29,19 +29,11 @@ function request(method, urlStr, args) {
     })
 }
 
-module.exports = url => {
+export default url => {
     return {
-        get(args) {
-            return request('GET', url, args)
-        },
-        post(args) {
-            return request('POST', url, args)
-        },
-        put(args) {
-            return request('PUT', url, args)
-        },
-        delete(args) {
-            return request('DELETE', url, args)
-        }
+        get: args => request('GET', url, args),
+        post: args => request('POST', url, args),
+        put: args => request('PUT', url, args),
+        delete: args => request('DELETE', url, args)
     }
 }

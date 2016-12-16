@@ -45,6 +45,7 @@ export default {
             this.fetch()
         },
         reset(type) {
+            if (!type) return
             this.showLoading = true
             this.type = type
             this.page = 1
@@ -60,7 +61,7 @@ export default {
             }
         }
     },
-    created() {
+    mounted() {
         this.reset(this.$route.params.type)
     }
 }
