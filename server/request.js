@@ -29,7 +29,7 @@ function request(method, urlStr, args) {
     })
 }
 
-export default url => {
+module.exports = url => {
     return {
         get: args => request('GET', url, args),
         post: args => request('POST', url, args),

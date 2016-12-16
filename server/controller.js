@@ -4,7 +4,7 @@ const url = require('url')
 
 const remote = 'http://m.duotoo.com/'
 
-export const cates = (req, res) => {
+exports.cates = (req, res) => {
     request(`${remote}meinvtupian/`).get().then(body => {
         const $ = cheerio.load(body)
 
@@ -22,7 +22,7 @@ export const cates = (req, res) => {
     })
 }
 
-export const list = (req, res) => {
+exports.list = (req, res) => {
     const type = req.params.type
     const page = req.params.page ? `${type}_${req.params.page}.html` : ''
 
@@ -51,7 +51,7 @@ export const list = (req, res) => {
     })
 }
 
-export const details = (req, res) => {
+exports.details = (req, res) => {
     const url = remote + req.params.type + '/' + req.params.id
     const pageNo = parseInt(req.params.page || 1)
     const pageMax = req.query.max ? Math.min(parseInt(req.query.max), pageNo + 4) : pageNo + 4
